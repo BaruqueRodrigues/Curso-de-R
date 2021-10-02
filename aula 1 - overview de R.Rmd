@@ -1,0 +1,264 @@
+---
+title: "Aula 1 - Uma Overview de R"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+
+```
+
+
+
+## O R como calculadora
+
+### Você pode executar somas
+```{r}
+25+11
+```
+
+### Assim como subtrações.
+```{r}
+385-298
+```
+### Multiplicações.
+```{r}
+223*9384
+```
+### Divisões.
+```{r}
+389/11
+```
+
+### Exponenciações.
+```{r}
+2^10
+```
+
+### Ou operações matemáticas mais complexas como expressões númericas.
+
+Todavia dentro do ambiente do R não usamos {} ou [], já que eles tem funções específicas, mas usamos os ().
+
+```{r}
+2+(1+(4/2)-(2*1)+10)
+```
+## Apresentando os operadores lógicos do R.
+```{r, echo = FALSE, results ='asis'}
+operadores<-data.frame('Tipo de Teste'=c("igual",
+                             "diferente",
+                             "maior que",
+                             "menor que",
+                             "maior ou igual que",
+                             "menor ou igual que",
+                             "e",
+                             "ou",
+                             "não",
+                             "de n até m",
+                             "valor correspondente"),
+'Operador Lógico'= c("==",     "!=",
+                                ">",
+                                "<",
+                                ">=",
+                                "<=",
+                                "&",
+                                "|",
+                                "!",
+                                ":",
+                                "%in%"),
+                    ex=c("2==2",
+                         "2!=3",
+                         "3>2",
+                         "3<2",
+                         "",
+                         "",
+                         "A&B",
+                         "A|B",
+                         "A!B",
+                         "1:60",
+                         'vogais %in% c("a","b","c","d","e")'))
+names(operadores)<-c("Tipo de Teste", "Operador Lógico", "Exemplo")
+
+kable(operadores)
+```
+## Apresentando os Tipos de Objetos
+
+### Objetos númericos (numeric).
+```{r}
+a<- c(9, 4,4,1)
+a;class(a)
+```
+
+### Objetos de sequência de caracteres (character).
+```{r}
+b<- c("flamengo", "vasco", "fluminese", "botafogo")
+b;class(b)
+```
+
+### Objetos do tipo factor (factor).
+```{r}
+c<- factor(c("atual campeão", "em disputa série", "fora da competição", "fora da competição"))
+c;class(c)
+```
+
+### Objetos do Tipo Dataframe.
+```{r}
+df<-data.frame(b,a,c)
+df
+```
+
+### Alterando o nome das colunas de um dataframe.
+```{r}
+names(df)<-c("time", "número de brasileiros", "status no brasileirão")
+df
+```
+
+## Acessando elementos dentro de um objeto.
+```{r}
+head(iris)
+```
+
+### Selecionando os itens da primeira coluna.
+```{r}
+iris[1]
+```
+
+### Selecionando Elementos na primeira linha.
+```{r}
+iris[1,]
+```
+
+### Selecionando elementos da 5° a 10° linha e das colunas 2 a 5.
+```{r}
+iris[5:10,2:5]
+```
+
+### Selecionando elementos das linhas 3, 5 e 6 e das colunas 1, 3 e 5.
+```{r}
+iris[c(3,5,6), c(1,3,5)]
+```
+
+### Selecionando uma coluna em um objeto Tabular
+```{r}
+iris$Sepal.Length
+```
+
+## Revisão
+
+### Dados Simulados
+
+```{r}
+t<-data.frame(
+     stringsAsFactors = FALSE,
+                             estado = c("alagoas","pernambuco","sergipe",
+                                        "bahia","rio grande do norte","piaui",
+                                        "ceará","paraiba","maranhão"),
+                            matches = c(23320L,42392L,35292L,63850L,
+                                        42823L,33301L,16711L,59766L,69495L),
+                     matches.brasil = c(848298L,848298L,848298L,848298L,
+                                        848298L,848298L,848298L,848298L,
+                                        848298L),
+                   maioria_feminina = c("sim","não","sim","não","sim",
+                                        "sim","sim","não","não"),
+                classe_predominante = c("alta","alta","media","baixa",
+                                        "baixa","alta","media","media","baixa"),
+                 idade_predominante = c("<20 e >30","<31 e > 35",
+                                        "<18 e > 23","<18 e > 23","<18 e > 23",
+                                        "<20 e >30","<31 e > 45","<31 e > 45","<45")
+              )
+```
+
+### Observando os casos onde há maioria feminina.
+```{r}
+t[t$maioria_feminina=="sim",]
+```
+
+### Observando Casos onde a classe predominante é alta.
+```{r}
+t[t$classe_predominante == "alta", ]
+```
+
+
+### Observando Casos onde a classa predominante é alta e a maioria é feminina.
+```{r}
+t[t$classe_predominante == "alta" & t$maioria_feminina=="sim", ]
+```
+
+### Observando Casos onde o número de matches é menor que 40 mil ou a classe predominante não é alta
+```{r}
+t[t$matches < 30000 | t$classe_predominante!="baixa", ]
+```
+
+### Observando Casos onde a idade predominante é entre 18 e 30 anos
+```{r}
+t[t$idade_predominante %in% c("<18 e > 23", "<20 e >30"), ]
+```
+
+### Calculando o percentual equivalente de matches no brasil do estado
+```{r}
+t$matches/t$matches.brasil*100
+```
+
+## Exercícios
+
+Acesse a página do "https://pt.wikipedia.org/wiki/Lista_de_unidades_federativas_do_Brasil_por_PIB" que contém uma tabela com os resultados do pib dos estados brasileiros. A partir dela responda os itens a seguir
+
+Crie um Vetor com o nome das UFs por ordem alfabética.
+```{r}
+
+```
+
+Qual a classe desse vetor?
+```{r}
+```
+Crie um vetor com os valores do pib, por ordem alfabética.
+```{r}
+
+```
+Qual a classe desse vetor/variável?
+```{r}
+
+```
+
+Acesse o link a seguir "https://pt.wikipedia.org/wiki/Lista_de_unidades_federativas_do_Brasil_por_popula%C3%A7%C3%A3o", que contem os dados da tamanho da população dos estados e crie um vetor com a população dos estados por ordem alfabética.
+```{r}
+
+```
+Qual a classe desse vetor/variável?
+```{r}
+
+```
+
+Crie e armazene em um objeto um dataframe com as variáveis, UF, PIB e População.
+```{r}
+
+```
+Cheque se o objeto criado é um dataframe.
+
+```{r}
+
+```
+
+Crie uma variável que meça o PIB per capita dos estados.
+```{r}
+
+```
+
+Sabendo que a população brasileira é de 211 milhões, crie uma variável com a população brasileira
+
+```{r}
+
+```
+
+Crie uma variável que meça o percentual da população do estado representa a população brasileira.
+Por exemplo se o Amazonas tem 4.207.714 habitantes, ele representa 2% da população brasileira.
+
+```{r}
+
+```
+
+### Apêndice
+
+Existem uma série de materiais com guias úteis, e que podem ajudar você nesse exercício, e/ou atividades futuras que contenham inserção de dados no ambiente R, e/ou operações aritméticas com variáveis. Deixo aqui alguns itens que podem ajudá-lo. 
+
+Um que pode auxiliar na inserção de dados é o datapasta "https://github.com/MilesMcBain/datapasta", ele é um addin que permite copiar informações de fora do r e colá-los no ambiente R em formatos tabulares, como tribble, tibble, dataframe. Segue vídeo exemplificando o uso do addin. "https://www.youtube.com/watch?v=Sz-tEVqZh5s"
