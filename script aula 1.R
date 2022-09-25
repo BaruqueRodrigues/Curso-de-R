@@ -32,29 +32,73 @@ flextable::flextable(operadores, cwidth = 2)
 ### Apresentando os Tipos de Objetos
 
 # Objetos númericos (numeric).
-a<- c(8,4,4,1)
-a;class(a)
+objeto_numeric <- c(8,4,4,1)
+objeto_numeric;class(objeto_numeric)
 
 # Objetos de sequência de caracteres (character).
 
-b<- c("flamengo", "fluminese","vasco", "botafogo")
-b;class(b)
+objeto_character<- c("flamengo", "fluminese","vasco", "botafogo")
+objeto_character;class(objeto_character)
 
 # Objetos do tipo factor (factor).
 
-c<- factor(c("atual campeão", "em disputa série", "fora da competição", "fora da competição"))
-c;class(c)
+objeto_factor<- factor(c("maior de todos", "em disputa série", "na série B", "bairro"))
+objeto_factor;class(objeto_factor)
 
 # Objetos do Tipo Dataframe.
 
-df<-data.frame(b,a,c)
+df<-data.frame(objeto_numeric,objeto_character,objeto_factor)
 df
+
+# Objetos do tipo lista
+
+lista <- list(times = objeto_character,
+           titulos_liberta = c(2, "virgem das americas", 1, "bairro"),
+           copas_br = c(3, 1, 1, "bairro"),
+           brasileiros = objeto_numeric)
+
 
 # Alterando o nome das colunas de um dataframe.
 
 names(df)<-c("time", "número de brasileiros", "status no brasileirão")
 df
 View(df)
+
+# Revisão 
+
+## Inserindo dados.
+
+# Cria um vetor de texto para cada linha do hino do mais querido
+
+"Uma vez Flamengo, sempre Flamengo
+Flamengo sempre eu hei de ser
+É meu maior prazer vê-lo brilhar
+Seja na terra, seja no mar
+Vencer, vencer, vencer!
+Uma vez Flamengo"
+
+"Na regata, ele me mata
+Me maltrata, me arrebata
+Que emoção no coração!
+Consagrado no gramado
+Sempre amado, o mais cotado
+Nos Fla-Flu é o Ai, Jesus!"
+
+"Eu teria um desgosto profundo
+Se faltasse o Flamengo no mundo
+Ele vibra, ele é fibra
+Muita libra já pesou
+Flamengo até morrer eu sou!"
+
+linha_1 <- "Uma vez Flamengo, sempre Flamengo"
+
+# Concatene os vetores das versos em um único vetor.
+
+# Crie um vetor identificandos as estrofes 
+
+# Crie um vetor  contando as linhas do hino do flamengo
+
+# Concatene os itens acima em um dataframe.
 
 ### Acessando elementos dentro de um objeto.
 
@@ -76,7 +120,8 @@ iris[5:10,2:5]
 
 # Selecionando elementos das linhas 3, 5 e 6 e das colunas 1, 3 e 5.
 
-iris[c(3,5,6), c(1,3,5)]
+iris[c(3,5,6),
+     c(1,3,5)]
 
 ### Revisão
 
@@ -104,21 +149,35 @@ t<-data.frame(
 
 t[t$maioria_feminina=="sim",]
 
+subset(t,
+      maioria_feminina =="sim")
+
 # Observando Casos onde a classe predominante é alta.
 
 t[t$classe_predominante == "alta", ]
+
+subset(t,
+       classe_predominante == "alta")
 
 # Observando Casos onde a classe predominante é alta e a maioria é feminina.
 
 t[t$classe_predominante == "alta" & t$maioria_feminina=="sim", ]
 
+subset(t,
+       classe_predominante == "alta" & t$maioria_feminina=="sim")
 # Observando Casos onde o número de matches é menor que 30 mil ou a classe predominante não é baixa
 
 t[t$matches < 30000 | t$classe_predominante!="baixa", ]
 
+subset(t,
+       matches < 30000 | t$classe_predominante!="baixa")
+
 #Observando Casos onde a idade predominante é entre 18 e 30 anos
 
 t[t$idade_predominante %in% c("<18 e > 23", "<20 e >30"), ]
+
+  subset(t,
+       idade_predominante %in% c("<18 e > 23", "<20 e >30"))
 
 #Calculando o percentual equivalente de matches no brasil do estado
 
