@@ -2,10 +2,10 @@
 
 # instalando pacotes externos
 
-install.packages(tibble) # formato tabular
-install.packages(dplyr) # manipulação de dados
-install.packages(lubridate) # manipulação de datas
-install.packages(forcats) # manipulação de factors
+install.packages("tibble") # formato tabular
+install.packages("dplyr") # manipulação de dados
+install.packages("lubridate") # manipulação de datas
+install.packages("forcats") # m
 
 # Lendo a documentação dos pacotes
 
