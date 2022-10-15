@@ -14,6 +14,8 @@ library(purrr) # ferramentas de programação funcional
 # No nosso exemplo vamos executar multiplos testes de regressão
 # Vamos usar os dados do datasus que vão utilizados um modelo de dados de painel
 
+dados_painel <- rio::import("dados/dados_painel.rds")
+
 glimpse(dados_painel)
 
 # Vamos calcular um modelo de regressão para cada uma das taxas de mortalidade
@@ -23,7 +25,7 @@ glimpse(dados_painel)
 plm::plm(values_mortalidade~pessoas_psf,
          data = dados_painel,
          model = "within",
-         index = c("ano", "municipio")))
+         index = c("ano", "municipio"))
 
 # Entretanto vamos usar o R para facilitar a nossa vida
 
