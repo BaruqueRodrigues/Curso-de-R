@@ -2,28 +2,50 @@
 
 # Você pode executar somas
 25+11
-
+12+24
+35+11
 # Assim como subtrações.
-
+1-1
+2+2
 385-298
 
 # Multiplicações.
 
 223*9384
+2*2
+3*4
 
 # Divisões.
+5/2
 
 389/11
-
+5/1
 
 # Exponenciações.
 
 2^10
+5**2
+2**3
+2^3
 
 # Expressões Númericas
 # [] {} não são usados
 
 2+(1+(4/2)-(2*1)+10)
+10+(2*(2+3)-5)
+
+### Criando Objetos
+
+# Operador <-
+
+# Operador =
+
+### Nomeando Objetos
+
+usamos_snake_case <- "snake_case"
+CamelCase <- "CamelCase"
+uso.de.pontos <- "periods.case"
+REJECT_ConVenTiOn.Embrace_modernity <- "insanidade e loucura"
 
 ### Operadores Lógicos
 
@@ -37,18 +59,23 @@ objeto_numeric;class(objeto_numeric)
 
 # Objetos de sequência de caracteres (character).
 
-objeto_character<- c("flamengo", "fluminese","vasco", "botafogo")
+objeto_character <- c("flamengo", "fluminese","vasco", "botafogo")
 objeto_character;class(objeto_character)
 
 # Objetos do tipo factor (factor).
 
-objeto_factor<- factor(c("maior de todos", "em disputa série", "na série B", "bairro"))
+objeto_factor <- factor(
+                        c("maior de todos", "em disputa série",
+                          "na série B", "bairro")
+                        )
+
 objeto_factor;class(objeto_factor)
 
 # Objetos do Tipo Dataframe.
 
-df<-data.frame(objeto_numeric,objeto_character,objeto_factor)
+df <- data.frame(objeto_character, objeto_numeric, objeto_factor)
 df
+
 
 # Objetos do tipo lista
 
@@ -56,11 +83,11 @@ lista <- list(times = objeto_character,
            titulos_liberta = c(2, "virgem das americas", 1, "bairro"),
            copas_br = c(3, 1, 1, "bairro"),
            brasileiros = objeto_numeric)
-
+lista
 
 # Alterando o nome das colunas de um dataframe.
 
-names(df)<-c("time", "número de brasileiros", "status no brasileirão")
+names(df) <- c("time", "número de brasileiros", "status no brasileirão")
 df
 View(df)
 
@@ -123,7 +150,13 @@ iris[5:10,2:5]
 iris[c(3,5,6),
      c(1,3,5)]
 
+# Podemos também usar o operador $ para selecionar colunas
+iris$Sepal.Length
+
+
 ### Revisão
+# Nessa revisão consulte a tabela de operadores lógicos e responda as questões a seguir
+
 
 # Dados Simulados
 
@@ -149,36 +182,19 @@ t<-data.frame(
 
 t[t$maioria_feminina=="sim",]
 
-subset(t,
-      maioria_feminina =="sim")
-
 # Observando Casos onde a classe predominante é alta.
 
 t[t$classe_predominante == "alta", ]
 
-subset(t,
-       classe_predominante == "alta")
-
 # Observando Casos onde a classe predominante é alta e a maioria é feminina.
 
 t[t$classe_predominante == "alta" & t$maioria_feminina=="sim", ]
-
-subset(t,
-       classe_predominante == "alta" & t$maioria_feminina=="sim")
 # Observando Casos onde o número de matches é menor que 30 mil ou a classe predominante não é baixa
 
 t[t$matches < 30000 | t$classe_predominante!="baixa", ]
-
-subset(t,
-       matches < 30000 | t$classe_predominante!="baixa")
-
 #Observando Casos onde a idade predominante é entre 18 e 30 anos
 
 t[t$idade_predominante %in% c("<18 e > 23", "<20 e >30"), ]
-
-  subset(t,
-       idade_predominante %in% c("<18 e > 23", "<20 e >30"))
-
 #Calculando o percentual equivalente de matches no brasil do estado
 
 t$matches/t$matches.brasil*100
