@@ -1,0 +1,382 @@
+---
+title: "Aula 4 - Manipulando quase qualquer base"
+output: html_document
+date: "2023-01-29"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Entendendo datasets Wide e Long
+
+Vamos carregar o tidyverse, já que ele contém os principais pacotes que veremos nessa aula, a saber, tidyr, tibble, dplyr e ggplot
+
+```{r}
+library(tidyverse)
+```
+
+Para compreender o que são datasets long e wide vamos usar os datasets do pacote {tidyr}. Um dataset pode apresentar e organizar dados de multiplas maneiras. Vejamos o dataset abaixo.
+
+O dataset abaixo é chamado de dataset *tidy*, ou organizado.
+
+```{r}
+tidyr::table1
+```
+
+Já os datasets abaixo está no formato wide. Observem que o dataset table4a mede a informações de cases, e o dataset table4b mede as informações de population. Datasets wide são conhecidos por distribuirem suas informações horizontalmente. Nesse caso temos as informações de casos e de população medidas por ano em colunas.
+
+```{r}
+tidyr::table4a
+```
+
+```{r}
+tidyr::table4b
+```
+
+Vejam agora o dataset table2. Ele é um dataset long, onde temos variáveis empilhadas em colunas. A coluna type mede o tipo de variável, nesse caso temos as variáveis cases e population, que no dataset table1 tem suas próprias colunas, empilhadas na coluna type, e os seus valores empilhados na coluna count. Outro característica de datasets long é que eles tem menos colunas e mais linhas que datasets tidy.
+
+```{r}
+tidyr::table2
+```
+
+Já o dataset table1 é chamado de tidy, ou organizado já que: 1. Cada variável tem sua própria coluna; 2. Cada observação tem sua própria linha; 3. Cada valor está em sua própria celula.
+
+E como transformar um dataset para um formato tidy? Uma das possibilidades e a mais indicada é usando o pivoting. Voltemos a tablea4a.
+
+```{r}
+tidyr::table4a
+```
+
+Como podemos tranformar esses dados em tidy data, ou dados organizados? A resposta é usando as funções de pivoting. Seja de pivot_longer() que transforma os dados em formato long, ou seja usando a pivot_wider que transforma os dados em formato wide.
+
+```{r}
+tidyr::table4a %>% # dataset em formato wide
+  tidyr::pivot_longer(  #Função que transforma os dados em formato long
+    c(`1999`, `2000`),  #Indicamos as colunas que serão empilhadas
+    names_to = "year",  #Indicamos a coluna que receberá valor de classificação
+    values_to = "cases" #Indicamos a coluna que receberá os valores
+    )
+```
+
+Sempre que quisermos organizar um dataset em um formato long, usaremos a função tidyr:: pivot_longer.
+
+```{r}
+tidyr::table4b %>% #dataset em formato wide
+  tidyr::pivot_longer(        #Função que transforma os dados em formato long
+    c(`1999`, `2000`), #Indicamos as colunas que serão empilhadas
+    names_to = "year", #Indicamos a coluna que receberá valor de classificação
+    values_to = "population"#Indicamos a coluna que receberá os valores
+  )
+```
+
+Um outro exemplo de datasets que não estão em formato tidy é o dataset table2. Nesse caso não temos uma variável para cada coluna, já que a coluna type mede o nome da variável e a coluna count o valor observado da variável.
+
+```{r}
+tidyr::table2
+```
+
+Para transformar esse dataset no formato tidy usamos a função tidyr:: pivot_longer().
+
+```{r}
+tidyr::table2 %>% #dataset n formato long
+  tidyr::pivot_wider( # função que transforma os dados no formato wide
+    names_from = type, # coluna que empilha o nome das variáveis
+    values_from = count # coluna que empilha o valor observado das variáveis
+              )
+```
+
+### Revisão
+
+Importe o dataset dados_b3_2010_2022.csv; Remova a 1° coluna; Transforme o dataset para o formato tidy;
+
+```{r}
+dados_b3_2010_2022.csv <- readr::read_csv("https://raw.githubusercontent.com/BaruqueRodrigues/Curso-de-R/master/dados/dados_b3_2010_2022.csv")
+
+```
+
+```{r}
+dados_b3_2010_2022.csv %>% 
+  select(-1) %>% 
+  tidyr::pivot_wider(names_from = ticker,
+              values_from = ret_adjusted_prices)
+```
+
+Transforme o dataset abaixo para o formato tidy()
+
+```{r}
+people <- tribble(
+  ~name,             ~names,  ~values,
+  #-----------------|--------|------
+  "Phillip Woods",   "age",       45,
+  "Phillip Woods",   "height",   186,
+  "Phillip Woods",   "age",       50,
+  "Jessica Cordero", "age",       37,
+  "Jessica Cordero", "height",   156
+)
+```
+
+```{r}
+people %>% 
+  tidyr::pivot_wider(names_from = names,
+              values_from = values)
+```
+
+O dataset acima contém colunas com valores listados. Guarde essa informação, em breve veremos como lidar com esses dados.
+
+## Separando e Juntando dados
+
+Alguns datasets tem particularidades,onde os valores das colunas ficam aninhandos a função tidyr::separate()
+
+```{r}
+tidyr::table3
+```
+
+Veja a coluna rate da table3. Ela contém os valores de cases e population, entretanto essa coluna contém 2 variáveis diferentes, e para transformarmos esses dados em formato tidy precisamos separar essas colunas.
+
+```{r}
+tidyr::table3 %>% # dataset com uma coluna que precisa ser separado
+  tidyr::separate( # função que irá separar a coluna
+    rate, # coluna que será separada
+    sep = "/", # argumento que deve ser separado
+    into = c("cases", "population") # nome das colunas que serão separadas
+  )
+```
+
+Podemos usar a função separate de diversar formas, de maneira quase ilimitada, como o caso abaixo que separamos a coluna year. no segundo digito
+
+```{r}
+tidyr::table3 %>% #dataset com uma coluna que precisa ser separado
+  tidyr::separate(# função que irá separar a coluna
+    year, # coluna que será separada
+    into = c("century", "year"), # nome das colunas que serão separadas
+    sep = 2 # argumento que deve ser separado
+    )
+```
+
+Caso tenhamos que juntar valores que estão separados em colunas diferente podemos usar a função tidyr::unite() que funciona no inverso da função separate(). Observem o dataset abaixo. ele tem a coluna century e year, entretanto essas medidas são pouco usais, geralmente temos essas duas unidades juntas.
+
+```{r}
+tidyr::table5
+```
+
+Para juntar os dados utilizaremos a função tidyr::unite()
+
+```{r}
+table5 %>% # dataset que terá colunas ajuntadas
+  unite( # função que juntará as colunas
+    ano_completo, # nova coluna
+    century, year, #colunas que serão juntas
+    sep = "" #separador 
+    )
+```
+
+\### Revisão
+
+Importe o dataset pedidos. Remova a primeira linha e transforme ele em um formato tidy onde a descrição por pedido seja separado em multiplos itens e o dataset tenha um formato long.
+
+```{r}
+ pedidos <- readr::read_csv(
+
+    "https://raw.githubusercontent.com/BaruqueRodrigues/Curso-de-R/master/dados/pedidos.csv")
+```
+
+A resolução
+
+```{r}
+pedidos %>% 
+  select(-1) %>% # removo a primeira coluna
+  separate(descricao_por_pedido,
+           into = c("item_1", #separo a coluna em 5 itens
+                    "item_2",
+                    "item_3",
+                    "item_4",
+                    "item_5"),
+           sep = ","#indico que o separador é uma virgula
+           ) %>% 
+  #Transformo os dados em um formato long
+  pivot_longer(c(item_1:item_5),
+               names_to = "item_pedido",
+               values_to = "desc_pedido")
+```
+
+ ### Lidando com missing data
+
+Existem 3 funções poderosas que podemos usar para lidar com dados ausentes são elas drop_na() que remove os casos com o valor NA; fill() que preenche valores NA com os valores númericos mais próximos ; replace_na() que substitui os valores NA por valores determinados pelo operador.
+
+Vamos usar o dataset pedidos usado na revisão para exemplificar o uso de algumas dessas funções.
+
+```{r}
+pedidos_final <- pedidos %>% 
+  select(-1) %>% 
+  separate(descricao_por_pedido,
+           into = c("item_1",
+                    "item_2",
+                    "item_3",
+                    "item_4",
+                    "item_5"),
+           sep = ",") %>% 
+  pivot_longer(c(item_1:item_5),
+               names_to = "item_pedido",
+               values_to = "desc_pedido")
+
+pedidos_final
+```
+
+A função drop_na() lida com dados ausentes removendo eles do dataset
+
+```{r}
+pedidos_final %>% 
+  drop_na()
+```
+
+A função fill() vai preencher os valores ausentes com um valor da coluna usando o valor mais próximo do dado ausente. Entretanto só funciona com dados numéricos
+
+```{r}
+sales <- tibble::tribble(
+  ~quarter, ~year, ~sales,
+  "Q1",    2000,    66013,
+  "Q2",      NA,    69182,
+  "Q3",      NA,    53175,
+  "Q4",      NA,    21001,
+  "Q1",    2001,    46036,
+  "Q2",      NA,    58842,
+  "Q3",      NA,    44568,
+  "Q4",      NA,    50197,
+  "Q1",    2002,    39113,
+  "Q2",      NA,    41668,
+  "Q3",      NA,    30144,
+  "Q4",      NA,    52897,
+  "Q1",    2004,    32129,
+  "Q2",      NA,    67686,
+  "Q3",      NA,    31768,
+  "Q4",      NA,    49094
+)
+
+sales
+```
+
+```{r}
+sales %>% 
+  fill(year)
+```
+
+A função replace_na() vai substituir os dados ausentes por valores especificados.
+
+```{r}
+pedidos_final %>% 
+  replace_na(# função que vai substituir NA pelo valor desejado
+    list( # usamos a função list pois podemos inserir várias colunas
+      desc_pedido = "item_ausente" #indicando o substituto por coluna
+      )
+    )
+```
+
+\## Transformando vetores de texto em datasets
+
+Muitas vezes recebemos dados em formato de lista, ou formato textual e precisamos transforma-los para um formato de dataset. Uma das formas mais simples e robustas de fazer essa transformação é usando a função tibble::enframe(). Exemplificaremos usando os dados abaixo.
+
+```{r}
+dados_lista <- list(times = c("flamengo", "fluminense", "vasco", "botafogo"),
+     titulos_liberta = c(2, "virgem das americas", 1, "bairro"),
+     copas_br = c(3, 1, 1, "bairro"),
+     brasileiros = c(8,4,4,1)) 
+```
+
+```{r}
+dados_lista
+```
+
+Utilizando a função enframe forçamos a lista em um formato de dataset. Entretanto os dados não estão no formato tidy, e temos valores em formato de list na coluna value.
+
+```{r}
+dados_lista %>% 
+  enframe()
+```
+
+O primeiro passo para lidar com esses dados é transformar os dados em formato tidy, usando a função tidyr::pivot_wider.
+
+```{r}
+dados_lista %>% #lista
+  enframe() %>% #função que transforma os dados em formato dataset
+  pivot_wider( #função que transforma os dados em formato wide
+    names_from = name, 
+    values_from = value) 
+```
+
+Agora temos um dataset em formato tidy, entretanto ainda temos os valores em lista. Para lidar com esses tipos de dados usamos as funções da família unnest(), onde a função unnest_longer() tira os dados em formato de lista empilhando os valores em linha, e a função unnest_wider tira os dados de formato de lista espalhando em multiplas colunas.
+
+```{r}
+dados_lista %>% 
+  enframe() %>% 
+  pivot_wider(names_from = name,
+              values_from = value) %>% 
+  unnest_longer(c(times:brasileiros))
+```
+
+### Eninhando Dados
+
+Em alguns casos precisamos eninhar dados, ou seja passar uma série de colunas pra dentro de uma coluna, para isso usamos a função nest().
+
+\
+No caso abaixo criaremos uma coluna chamada data que criará uma coluna que vai conter um dataset com todas as informações para uma coluna. Utilizaremos o dataset ggplot2::mpg para exemplificar.
+
+```{r}
+mpg %>% glimpse()
+```
+
+```{r}
+ggplot2::mpg %>% 
+  nest(#função que eninha os dados
+    data = -model)
+```
+
+Cada linha da coluna data contém um dataset filtrado para coluna model. Ou seja temos um dataset que contém 38 datasets filtrados, cada um para um modelo.
+
+A partir de dados eninhados podemos fazer multiplas análises, já que dentro da coluna de um tibble qualquer elemento pode ser guardado.\
+\
+Podemos guardar modelos de regressão
+
+```{r}
+mpg %>% 
+  nest(data = -model) %>% 
+  mutate(lm_model = map(data, ~lm(hwy~cty+cyl, data =.)))
+```
+
+Podemos também printar essas multiplas regressões e entender como cada regressão perfoma para o tipo de modelo
+
+```{r, warning=FALSE}
+mpg %>% 
+  nest(data =-model) %>% 
+  mutate(lm_model = map(data, ~lm(hwy~cty+cyl, data =.)),
+         lm_model = map(lm_model, broom::tidy)
+         ) %>% 
+  unnest(lm_model)
+```
+
+Observe que agora temos para cada modelo um intercepto, um beta para coluna cty e um beta para a coluna cyl.
+
+Podemos fazer também um gráfico de dispersão para cada modelo.
+
+```{r}
+mpg %>% 
+  nest(data =-model) %>%
+  mutate(grafico = map(data, ~ggplot(data = .,
+                                     aes(x = hwy, y = cty))+
+                         geom_point()))
+
+```
+
+Observe que a coluna gráfico contém um objeto chamado gg. Se printarmos a coluna visualizaremos os gráficos
+
+```{r}
+mpg %>% 
+  nest(-model) %>%
+  mutate(grafico = map(data, ~ggplot(data = .,
+                                     aes(x = hwy, y = cty))+
+                         geom_point())) %>% 
+  pull(grafico)
+
+```
+
+## Exercícios
