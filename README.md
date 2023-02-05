@@ -1,7 +1,3 @@
----
-output: github_document
----
-
 # Curso-de-R
 
 Essa é a página do github do Curso de R. 
