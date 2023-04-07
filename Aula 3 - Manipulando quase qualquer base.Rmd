@@ -380,3 +380,179 @@ mpg %>%
 ```
 
 ## Exercícios
+
+Você trabalha em uma empresa de marketing e precisa preparar os dados para uma análise de campanhas publicitárias. Os dados atuais têm cada campanha em uma linha, com informações sobre o canal de publicidade e o número de cliques. Você precisa transformar esses dados em um formato mais amplo, com cada canal de publicidade em uma coluna separada e o número de cliques como valores correspondentes.
+
+```{r}
+campanhas <- data.frame(
+  campanha = paste0("Campanha", 1:20),
+  canal = sample(c("TV", "Rádio", "Impresso", "Digital"), 20, replace = TRUE),
+  cliques = sample(100:1000, 20, replace = TRUE)
+)
+
+campanhas
+```
+
+Você trabalha em uma empresa de pesquisa e precisa preparar os dados para uma análise de opinião dos clientes. Os dados atuais têm cada resposta em uma linha, com informações sobre o cliente, a pergunta e a resposta. Você precisa transformar esses dados em um formato mais longo, com cada pergunta em uma linha separada e as respostas correspondentes como valores.
+
+```{r}
+  opiniao <- data.frame(
+  cliente = sample(c("Cliente A", "Cliente B", "Cliente C", "Cliente D"), 20, replace = TRUE),
+  pergunta = sample(c("Qualidade do Produto", "Atendimento ao Cliente", "Preço"), 20, replace = TRUE),
+  resposta = sample(1:5, 20, replace = TRUE)
+)
+  opiniao
+```
+
+Você trabalha em uma empresa de pesquisa e precisa preparar os dados para uma análise de opinião dos clientes em vários países. Os dados atuais têm cada resposta em uma linha, com informações sobre o cliente, a pergunta, a resposta e o país. Você precisa transformar esses dados em um formato mais amplo, com cada pergunta e país em uma coluna separada e as respostas correspondentes como valores.
+
+```{r}
+opiniao_paises <- data.frame(
+  cliente = sample(c("Cliente A", "Cliente B", "Cliente C", "Cliente D"), 40, replace = TRUE),
+  pergunta = sample(c("Qualidade do Produto", "Atendimento ao Cliente", "Preço"), 40, replace = TRUE),
+  resposta = sample(1:5, 40, replace =TRUE),
+  pais = sample(c("Brasil", "Estados Unidos", "México", "Argentina"), 40, replace = TRUE)
+)
+opiniao_paises
+```
+
+Você está trabalhando com dados de uma pesquisa de mercado sobre preferências de alimentos. Cada linha da tabela de dados contém informações sobre um indivíduo, incluindo sua idade, sexo, estado civil, e suas escolhas de alimentos favoritos. As escolhas de alimentos estão todas em uma única coluna e separadas por vírgulas. Você precisa transformar esses dados em um formato mais longo, com cada escolha de alimento em uma linha separada e as informações pessoais correspondentes como valores.
+
+```{r}
+preferencias <- data.frame(
+  idade = sample(18:65, 50, replace = TRUE),
+  sexo = sample(c("Masculino", "Feminino"), 50, replace = TRUE),
+  estado_civil = sample(c("Solteiro", "Casado"), 50, replace = TRUE),
+  alimentos = replicate(50, paste(sample(c("Pizza", "Hambúrguer", "Sushi", "Salada"), sample(1:3, 1)), collapse = ", "))
+)
+```
+
+Você está trabalhando com dados de vendas de produtos em diferentes lojas. Cada linha da tabela de dados contém informações sobre um produto vendido, incluindo o nome do produto, a loja em que foi vendido, a data da venda e o número de unidades vendidas. Você precisa transformar esses dados em um formato mais amplo, com cada loja em uma coluna separada e o número de unidades vendidas como valores correspondentes.
+
+```{r}
+vendas <- data.frame(
+  produto = replicate(20, paste(sample(c("Notebook", "Smartphone", "Tablet", "Smartwatch"), 1))),
+  loja = sample(c("Loja A", "Loja B", "Loja C", "Loja D"), 20, replace = TRUE),
+  data = sample(seq(as.Date("2022/01/01"), as.Date("2022/01/31"), by = "day"), 20, replace = TRUE),
+  unidades_vendidas = sample(10:100, 20, replace = TRUE)
+)
+
+vendas
+```
+
+Você está trabalhando com dados de uma pesquisa de opinião pública sobre as eleições. As informações estão em duas colunas: o nome do candidato e o percentual de votos que ele recebeu em uma determinada pesquisa. Você precisa combinar essas duas informações em uma única coluna.
+
+```{r}
+pesquisa_eleitoral <- data.frame(
+  candidato = sample(c("João", "Maria", "José", "Ana"), 20, replace = TRUE),
+  votos = sample(10:80, 20, replace = TRUE)
+)
+
+pesquisa_eleitoral
+```
+
+Você está trabalhando com dados de endereços em uma planilha, onde cada endereço é dividido em várias colunas: rua, número, bairro, cidade e estado. Você precisa combinar essas informações em uma única coluna de endereço completo.
+
+```{r}
+enderecos <- data.frame(
+  rua = sample(c("Rua A", "Rua B", "Rua C"), 10, replace = TRUE),
+  numero = sample(1:100, 10, replace = TRUE),
+  bairro = sample(c("Bairro A", "Bairro B", "Bairro C"), 10, replace = TRUE),
+  cidade = sample(c("Cidade A", "Cidade B", "Cidade C"), 10, replace = TRUE),
+  estado = sample(c("SP", "RJ", "MG"), 10, replace = TRUE)
+)
+
+enderecos
+```
+
+Você está trabalhando com dados de uma tabela que contém informações sobre compras feitas em uma loja online. O nome do produto e a quantidade comprada estão em uma única coluna, separados por um hífen. Você precisa separar essas informações em duas colunas.
+
+```{r}
+compras_online <- data.frame(
+  produto_quantidade = replicate(20, paste(sample(c("Notebook", "Smartphone", "Tablet", "Smartwatch"), 1), sample(1:5, 1), sep = " - "))
+)
+compras_online
+```
+
+Você está trabalhando com dados de uma tabela que contém informações sobre o preço de um produto em diferentes lojas em diferentes dias. Há valores faltantes na coluna de preço para algumas datas e lojas. Você precisa preencher esses valores faltantes com o último valor válido da mesma loja.
+
+```{r}
+preco <- data.frame(
+  loja = rep(letters[1:3], each = 5),
+  data = rep(1:5, times = 3),
+  preco = sample(c(10, NA), size = 15, replace = TRUE)
+)
+
+preco %>% 
+  fill(preco)
+```
+
+Você está trabalhando com dados de uma tabela que contém informações sobre a temperatura de diferentes cidades em diferentes dias. Há valores faltantes na coluna de temperatura para alguns dias e cidades. Você precisa substituir esses valores faltantes pelo valor médio da temperatura para a mesma cidade.
+
+```{r}
+temperatura <- data.frame(
+  cidade = rep(c("Rio de Janeiro", "São Paulo", "Belo Horizonte"), each = 5),
+  data = rep(1:5, times = 3),
+  temperatura = sample(c(25.1:39.1, NA), size = 15, replace = TRUE)
+)
+
+temperatura
+```
+
+Você possui uma lista com informações sobre a quantidade de vendas de produtos em diferentes dias. Cada elemento da lista corresponde a um dia e contém um vetor com a quantidade de vendas de cada produto. Você precisa transformar essa lista em um tibble, onde cada linha corresponde a um dia e as colunas correspondem aos produtos.
+
+```{r}
+vendas <- list(
+  dia1 = c(10, 20, 15, 5, 25, 30),
+  dia2 = c(12, 18, 22, 7, 20, 25),
+  dia3 = c(18, 15, 20, 10, 30, 35),
+  dia4 = c(8, 24, 16, 3, 35, 28),
+  dia5 = c(14, 22, 18, 8, 28, 32)
+)
+```
+
+Você possui uma lista com informações sobre o tempo que cada funcionário levou para realizar uma tarefa. Cada elemento da lista corresponde a um funcionário e contém um vetor com o tempo que cada um levou para realizar a tarefa em diferentes dias. Você precisa transformar essa lista em um tibble, onde cada linha corresponde a um dia e as colunas correspondem aos funcionários.
+
+```{r}
+tempo_tarefa <- list(
+  func1 = c(60, 45, 50, 40, 55, 75),
+  func2 = c(55, 65, 70, 75, 80, 90),
+  func3 = c(70, 80, 60, 55, 70, 75),
+  func4 = c(50, 60, 75, 90, 100, 85),
+  func5 = c(80, 75, 65, 50, 40, 60)
+)
+
+```
+
+Você possui uma lista com informações sobre o número de alunos presentes em diferentes dias e em diferentes turmas de uma escola. Cada elemento da lista corresponde a um dia e contém um sub-lista com o número de alunos presentes em cada turma naquele dia. Você precisa transformar essa lista em um tibble, onde cada linha corresponde a um dia e as colunas correspondem às turmas.
+
+```{r}
+presenca_alunos <- list(
+  dia1 = list(turma1 = 25, turma2 = 30, turma3 = 22),
+  dia2 = list(turma1 = 28, turma2 = 31, turma3 = 23),
+  dia3 = list(turma1 = 30, turma2 = 28, turma3 = 25),
+  dia4 = list(turma1 = 27, turma2 = 30, turma3 = 21),
+  dia5 = list(turma1 = 29, turma2 = 27, turma3 = 24)
+)
+
+```
+
+Suponha que você tem uma lista de dados que contém informações sobre produtos vendidos em diferentes lojas. Cada elemento da lista contém um data frame com informações sobre os produtos vendidos em uma loja. Você deseja transformar essa lista em um único tibble, onde cada linha corresponde a uma venda, e as colunas correspondem às informações sobre os produtos vendidos (nome, quantidade e preço) e a loja onde a venda ocorreu.
+
+```{r}
+
+dados_produtos <- list(
+loja1 <- tibble(
+  nome = sample(c("Produto A", "Produto B", "Produto C"), 10, replace = TRUE),
+  quantidade = sample(1:10, 10, replace = TRUE),
+  preco = runif(10, 10, 100)
+),
+
+loja2 <- tibble(
+  nome = sample(c("Produto B", "Produto C", "Produto D"), 10, replace = TRUE),
+  quantidade = sample(1:10, 10, replace = TRUE),
+  preco = runif(10, 10, 100)
+)
+)
+
+```

@@ -1,0 +1,437 @@
+---
+title: "aula_02"
+output: html_document
+date: '2022-09-30'
+---
+
+### Manipulação de Dados - Saindo do 0 ###
+
+# instalando pacotes externos
+
+
+```{r, eval=FALSE}
+install.packages("tibble") # formato tabular
+install.packages("dplyr") # manipulação de dados
+install.packages("lubridate") # manipulação de datas
+install.packages("forcats") # manipulação de factors
+```
+
+# Lendo a documentação dos pacotes
+
+
+
+```{r, eval= FALSE}
+??tibble
+??dplyr
+??lubridate
+??forcats
+```
+
+
+# Apresentando o maravilhoso tibble
+O tibble é versão melhorada do data.frame, ele faz menos que o dataframe, como por exemplo não transformando string em factors, porém suporta uma variedade maior de dados
+
+
+```{r}
+library(tibble) #carregando o pacote
+```
+
+Observando as diferenças
+
+```{r}
+data.frame(iris)
+tibble::tibble(iris)
+
+```
+
+Observem que no formato tibble temos não só muito mais informações disponíveis, mas também os dados são expostos de forma mais elegante.
+
+Para avançarmos nas comparações construiremos dois objetos tabulares usando um list como elemento, e vamos ver como o dataframe e o tibble se comportam
+```{r}
+dados_data.frame <- data.frame(pessoa = c("Lucas", "Gabriel", "pedro"),
+           comida_favorita = list(list("bolo", "uva", "brigadeiro"), "churrasco", "pizza"),
+           cor_favorita = list("azul", list("vermelho", "preto"), "laranja" ),
+           time = c("flamengo", "flamengo", "flamengo"))
+
+dados_tibble <- tibble::tibble(pessoa = c("Lucas", "Gabriel", "pedro"),
+               comida_favorita = list(list("bolo", "uva", "brigadeiro"), "churrasco", "pizza"),
+               cor_favorita = list("azul", list("vermelho", "preto"), "laranja" ),
+               time = c("flamengo", "flamengo", "flamengo"))
+```
+
+Observamos que o formato dataframe acabou não conseguindo lidar com o formato list, não só criando novos valores como também, criando colunas desnecessárias
+```{r} 
+dados_data.frame
+```
+
+Com o formato tibble conseguimos ter uma coluna em formato list, a coluna de um tibble pode conter vários tipos de objetos, como modelos, gráficos, hyperlinks e afins.
+```{r}
+dados_tibble
+```
+
+
+# Contatos Imediatos com o Dplyr
+
+Antes de tudo, dê uma olhada na documentação do pacote
+```{r, eval = FALSE}
+?dplyr
+
+```
+
+Use a função library para carregar as funções adicionais do pacote em nosso ambiente R
+
+```{r}
+library(dplyr) #carrega o pacote
+
+```
+
+O Dplyr é em resumo o pacote que facilita a vida de quem está tratando dados, para compreendermos como vamos fazer uso do dataset starwars carregado pelo dplyr
+
+
+```{r}
+starwars <- dplyr::starwars
+```
+
+O dplyr oferece uma forma mais inteligente de observar um objeto tabular, a função glimpse resume o objeto em um formato em que podemos ler todas as colunas, o tipo das colunas e alguns valores assumidos.
+
+```{r}
+
+dplyr::glimpse(starwars)
+```
+
+O básico do dplyr pode ser definido como Funções que lidam com Linhas e com Colunas
+
+As Funções que lidam com linhas que serão apresentadas aqui são as funções, filter(), slice(), e arrange()
+
+A função filter seleciona linhas dado valor
+
+```{r}
+dplyr::filter(.data = starwars, # insiro o meu dataset
+              species == "Droid" # em seguida insiro o filtro de valores indicado a coluna que recebera o filtro e operador
+              )
+```
+
+O argumento .data não é necessário, eu posso inserir o dataset omitindo essa informação
+
+```{r}
+filter(starwars,
+        species == "Droid"
+       )
+```
+
+Caso eu deseja usar o pipe também posso
+```{r}
+starwars %>% 
+  filter(species == "Droid")
+```
+
+Já a função slice seleciona uma linha baseado em um valor
+
+```{r}
+dplyr::slice(.data = starwars,  
+             1:5 # em seguida insiro as linhas que serão selecionadas
+             )
+```
+
+A função arrange altera a ordem das linhas
+
+```{r}
+dplyr::arrange(.data = starwars, # insiro o meu dataset
+               height # en seguida insiro a coluna que irá reordenar os valores do dataset
+               )
+```
+
+Observem que a função arrange reordenou o dataset de ordem crescente, caso queira fazê-lo de forma descrescente use o argumento desc
+
+```{r}
+starwars %>% # insiro o meu dataset que receberá a função a seguir
+  arrange(#aplico a função arrange
+    desc(height) # em seguida aplico a função desc e a coluna que irá reordenar o dataset
+    )
+```
+
+E funções que lidam com colunas são as funções pull(), select(), rename(), mutate(), recode(), case_when(). Existem outras funções, entretanto por critérios pedagógicos decidimos apresentar essas funções que são o básico da manipulação dos dados com dplyr
+
+A função pull puxa os valores de uma coluna
+
+```{r}
+dplyr::pull(starwars, name = name)
+```
+
+Ela é muito útil para lidar com algumas funções que esperam receber não um dataset e uma coluna, mas apenas o valores, como a função table
+
+```{r}
+starwars %>% #insiro o dataset que receberá as funções a seguir
+  pull(species) %>% #insiro a função que ira puxar os valores da variável desejada
+  table() # uso a função table que cria uma tabela com os valores.
+```
+
+
+Já a função select seleciona as columas de um dataframe.
+```{r}
+dplyr::select(.data = starwars, #informo o dataset que terá as colunas selecionadas
+              name, height, species # e passo as colunas que serão selecionadas separado por virgula
+              )
+```
+
+A função select também serve para remover colunas, para isso eu uso o operador -
+
+```{r}
+starwars %>% #insiro o dataset que receberá as funções a seguir
+  select( #uso a função select para selecionar as colunas
+    name:mass, #uso o operador : para indicar que desejo selecionar os valores entre as 2 colunas
+         sex:species,
+         -homeworld #uso o operador - para remover essa coluna
+    )
+```
+
+
+
+Já a função rename renomeia as columas de um dataframe
+
+```{r}
+dplyr::rename(starwars,
+              nome = name,
+              altura = height, 
+              peso = mass,
+              cabelo = hair_color,
+              cor_da_pele = skin_color)
+```
+
+
+A função mutate permite criar e alterar valores das colunas. Para exemplificarmos criaremos um tibble mais resumido.
+```{r}
+starwars_resumido <- starwars %>% 
+  select(name, height, species)
+```
+
+Em seguida aplicaremos a função mutate para criar 2 variáveis. A primeira recodifica a altura em 2 categorias, ou alto ou baixo.
+A segunda recodifica a vaariável especies em grupos de alienigenas e não alienigenas.
+
+ aplicando o mutate
+
+```{r}
+starwars_resumido <- starwars_resumido %>%  #insiro o dataset que receberá as funções a seguir
+  mutate( #uso a função mutate para criar ou alterar variáveis
+    altura_agregada = ifelse(height >180, "alto", "baixo"),
+         alienigena = ifelse(!species %in% c("Human", "Droid"), "Alienigena", "Terraqueo")
+    )
+
+starwars_resumido
+```
+
+Mas se eu quiser recodificar uma variável devo usar sempre o ifelse? Jamais, use a função recode, já que o ifelse permite um teste com apenas 2 valores, logo só posso recodificar em 2 dimensões.
+
+```{r}
+starwars %>% #insiro o dataset que receberá as funções a seguir
+  select(name, eye_color) %>% #seleciono as funções name e eye_color
+  mutate(eye_color = recode(eye_color, #recodifico a coluna recolor, que recebe as alterações eye_color
+                                  "black" = "preto",
+                                  "blue" = "azul",
+                                  "yellow" = "amarelo",
+                                  "blue-gray" = "azul acinzentado",
+                                  "red" = "vermelho",
+                                  "brown" = "marrom"))
+```
+
+A recodificação com a função recode é bem simples, mas se aplica apenas nos valores declaraods
+
+Mas se você quiser recodificar um valor numerico? Devo inserir todos os valores um a um em uma categoria? Não use a função case_when()
+
+```{r}
+starwars %>% #insiro o dataset que receberá as funções a seguir
+  select(name, height, mass) %>% #seleciono as funções name e eye_color
+  mutate(altura_recodificado = case_when( #crio a coluna altura recodificado que receberá o produto do teste lógico dos itens a seguir
+    height <= 120 ~ "pequenino", # caso height seja menor ou igual que 120 então pequenino
+    height >= 121 & height  <= 165 ~ "pequeno", # caso height seja contido entre 121 e 165 então pequeno
+    height >=  166 & height <= 180 ~ "mediano", # caso height seja contido entre 165 e 180 então mediano
+    height >=  180 & height <= 200 ~ "alto", # caso height seja contido entre 180 e 200 então alto
+    height >200 ~ "gigantesco" # caso height seja maior que 200 então gigantesco
+  ) )
+```
+
+
+
+O case_when funciona como um ifelse vetorizado. Muito útil e um coringa na manipulação de dados
+
+Já a função relocate permite reordenar a posição das colunas
+
+```{r}
+starwars_resumido %>% #insiro o dataset que receberá as funções a seguir
+  relocate(altura_agregada, #indico qual coluna terá sua posição realocada
+           .after = height # uso o argumento .after para indicar onde
+           )
+```
+
+
+Já a função summarise nos permite fazer análises de grupo em uma única linha. Vamos ver a altura média entre humanos e androids
+
+```{r}
+starwars_resumido %>% #insiro o dataset que receberá as funções a seguir
+  filter(species %in% c("Human", "Droid")) %>% # filtro as especies em humanos e droids
+  group_by(species) %>% # agrupo pela coluna especies
+  summarise("altura média" = mean(height,
+                                  na.rm = T # o argumento na.rm remove os valores de NA
+                                  )) #sumariso a média dos grupos 
+
+```
+
+
+Criando a tabela descritiva clássica
+
+```{r}
+starwars_resumido %>% #insiro o dataset que receberá as funções a seguir
+  filter(species %in% c("Human", "Droid")) %>% # filtro as especies em humanos e droids
+  group_by(species) %>% # agrupo pela coluna especies
+  summarise(Minimos = min(height, na.rm = TRUE),
+            'Média' = mean(height, na.rm = TRUE),
+            'Desvio Padrão' = sd(height, na.rm = TRUE),
+            'Variância' = var(height, na.rm = TRUE),
+            'Máxima' = max(height, na.rm = TRUE))
+
+
+```
+
+### É hora da revisão
+
+Encontre os Droids que tem entre 120 e 180 de altura.
+
+Encontre os moradores de Tatooine e Naboo.
+
+Mostre quem é o morador mais alto de Tatooine.
+
+Produza um tibble com as name, sex, gender, homeworld e mass.
+
+Traduza os valores das variaveis sex, gender e homeworld do dataset gerado acima.
+
+Crie uma variável que recodifique a variável mass em 5 grupos. 
+
+### Pacote lubridate
+
+Pacote que serve para lidar com datas em R
+
+Carregamos o pacote
+```{r}
+library(lubridate)
+```
+
+Para exemplificar as funções vamos criar esse dataset
+```{r}
+
+formatos_data <- tibble(dmy = 28092022,
+                        ymd = 20220928,
+                        dmy_sep_traco = "28-SET-2022",
+                        dmy_sep_barra = "28/09/2022")
+
+formatos_data
+```
+
+Gerando dados formato dia mes ano. A função dmy() cria um elemento de data com o formato dia-mes-ano
+
+```{r}
+formatos_data %>%
+  mutate(dmy_sep_traco = dmy(dmy_sep_traco)
+         )
+```
+
+
+Gerando dados formato ano mes dia
+```{r}
+formatos_data %>%
+  mutate(ymd = ymd(ymd))
+```
+
+E se eu quise encontrar um valor especifico dentro da formato data? usamos as funções, year() para extrair o ano, month() para extrair o mes, day() para extrair o dia, e seconds() para extrair os segundos
+```{r}
+formatos_data %>%
+  mutate(ymd = ymd(ymd),
+         ano = year(ymd), #extrai o ano
+         mes = month(ymd), #extrai o mes
+         dia = day(ymd), #extrai o dia
+         segundos = second(ymd) #extrai os segundos
+         ) 
+
+```
+
+
+
+O pacote lubridate também oferece a possibilidade de operarmos operações matematicas com datas. Para isso usamos a função time_lenght. Vamos simular alguns dados para fazer essa exemplificação
+```{r}
+tibble_datas <- tibble(data_inicial = dmy(c("01-01-2012",
+                        "05-03-2009",
+                        "10-01-2013",
+                        "22-12-2005",
+                        "23-11-2019")),
+       data_final = dmy(c("09-07-2022",
+                      "04-09-2022",
+                      "08-04-2022",
+                      "18-11-2022",
+                      "16-10-2022")))
+
+tibble_datas
+```
+
+Para fazer as operações utilizamos a função time_lenght(), onde indicamos os vetores de data e em seguida a operação desejada, por fim indicamos o formato em que desejamos os dados
+
+
+### Forcats
+```{r}
+tibble_datas %>% 
+  mutate(dif_em_dias = time_length(data_final - data_inicial,
+                                  "days" #indicamos o vetor days pois queremos o resultado em dias
+                                  ),
+         dif_em_meses = time_length(data_final - data_inicial,
+                                    "months" #indicamos o vetor month pois queremos o resultado em meses
+                                    ),
+         dif_em_anos = time_length(data_final - data_inicial,
+                                   "years" #indicamos o vetor years pois queremos o resultado em anos
+                                   ))
+```
+
+
+### Exercícios
+
+utilize o dataset nes do pacote poliscidata para fazer as analises
+
+Crie um dataset resumido com as variáveis ftgr_cons, dem_raceeth, voted2012,science_use, preknow3, obama_vote, income5, gender, filtrando para apenas os eleitores que votaram em 2012
+
+
+recodifique a variável obama_vote para uma dummy com sim ou não.
+recodifique a variável dem_raceeth entre brancos e não brancos
+
+recodifique a variável ftgr_cons na variavel ideology em 3 grupos esquerda, centro e direita
+Calcule a média de conservadorismo (fgtr_cons) por grupo de consumo de ciência
+
+Calcule o n° de individuos que são conservadores por grupo de consumo de ciência
+
+Calcule o desvio padrão de individuos que são conservadores por grupo de consumo de ciência
+
+Calcule o variancia de individuos que são conservadores por grupo de consumo de ciência
+
+### PT2
+
+usaremos o dataset nycflights13 Não esqueçam de instalar o pacote
+
+```{r, eval = FALSE}
+install.packages(nycflights13)
+```
+
+
+
+```{r}
+nycflights13::flights
+```
+
+crie um dataset com os voos de 1 de janeiro
+
+crie um dataset com os voos de novembro ou dezembro
+
+Crie um dataset com atrasos (arr_delay e dep_delay) de mais de 120 minutos
+
+Sabendo a variável  distance mede a distancia percorrida e a variávle air_time o tempo no car
+crie um dataset que contenha essas 2 variáveis e uma outra variável que calcule a velocidade em minutos
+
+
+Crie uma variável que calcule a média de velocidade por ano
+
+Crie um dataset que selecione os 5 voos (flight) mais rápidos
