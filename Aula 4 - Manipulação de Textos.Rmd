@@ -1,0 +1,633 @@
+---
+title: "Aula 4 - Manipulação de Textos"
+output: html_document
+date: "2023-02-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Relebrando o que são strings
+
+Strings são literalmente textos, e dentro do R sempre que desejamos inserir uma string usamos aspas
+
+```{r}
+string1 <- "Aqui eu tenho um string"
+
+string2 <- 'Se eu quiser incluir uma citação eu tenho que usar "aspas duplas", dentro de aspas simples'
+
+```
+
+E pra usar uma barra?
+
+```{r}
+x <- c("\"", "\\")
+
+writeLines(x)
+```
+
+Sempre que desejarmos usar [caracteres espeiciais](https://www3.ntu.edu.sg/home/ehchua/programming/howto/Regexe.html#:~:text=Special%20Regex%20Characters%3A%20These%20characters,with%20a%20backslash%20(%20%5C%20).) como uma  uma  para indicar que ele deve ser usado literalmente.
+
+Agora vamos limpar nosso ambiente de trabalho (aka staging area)
+
+```{r}
+rm(list = ls())
+```
+
+## O fundamental da manipulação de texto
+
+Vamos usar o pacote stringr para fazer uso das funções de manipulação de textos
+
+```{r}
+library(stringr)
+```
+
+No stringr as função são identificadas pelo prefixo str\_. Sempre que quisermos usar uma função do stringr mas não lembramos digitamos str\_ apertamos tab e podemos identificá-la.
+
+Como contamos vetores de texto?
+
+```{r}
+tri_liberta <- c("mil novecentos e oitenta e nove",
+                 "dois mil e desenove",
+                 "dois mil e vinte dois")
+```
+
+Usando a função length()?
+
+```{r}
+length(tri_liberta)
+```
+
+A função str_lenght() é mais adequada pois conta quanto elementos estão contido em cada vetor do objeto.
+
+```{r}
+str_length(tri_liberta)
+```
+
+E como faço para combinar as strings abaixo com outro texto?
+
+```{r}
+paises_tri <- c("no Chile",
+                "no Peru",
+                "no Equador")
+```
+
+Usando a função c() que combina elementos?
+
+```{r}
+c("fomos campeões", paises_tri)
+```
+
+Ou usando a função str_c()?
+
+```{r}
+str_c("fomos campeões", paises_tri,
+      sep = " ")
+```
+
+Diferente da função c() que adiciona um vetor ao objeto, a função str_c adiciona uma string a todos os vetores de texto contidos dentro do objeto.
+
+```{r}
+txt_campeoes <-str_c("fomos campeões",
+      paises_tri,
+      "em",
+      tri_liberta,
+      sep = " ")
+
+txt_campeoes
+```
+
+Mas como fazemos o procedimento contrário? Como pegamos um subconjunto de texto dentro de uma string? Usando a função str_sub()
+
+```{r}
+maior_campeao_liberta <- "Flamengo"
+```
+
+Se eu quiser somente os 3 primeiras letras de uma string?
+
+```{r}
+str_sub(maior_campeao_liberta,
+        start = 1, # pegar a partir de primeira letra
+        end = 3 # para na terceira letra
+        )
+```
+
+Se eu quiser somente as 5 últimas letras ?
+
+```{r}
+str_sub(maior_campeao_liberta,
+        start = -5, # pegar a partir da quinta ultima letra
+        end = -1 # para a última letra
+)
+```
+
+E para contar quantas vezes um termo aparece no texto?
+
+```{r}
+str_count(string = txt_campeoes,
+          pattern =  "campeões")
+
+```
+
+E para transformar todas as letras em maisculas?
+
+```{r}
+str_to_upper(maior_campeao_liberta)
+```
+
+E para transformar todas as letras em minusculas?
+
+```{r}
+realidade <- str_to_title(c("flamengo é o maior time do brasil.",
+             "o vasco é minusculo.", 
+             "o botafogo é um bairro.",
+             "o fluminense é virgem das américas."))
+
+realidade
+```
+
+E se eu quiser que apenas a 1° letra da expressão fique maiscula?
+
+```{r}
+str_to_sentence(c("O FLAMENGO É GIGANTE",
+                "O VASCO É MINUSCULO"))
+```
+
+## Identificando Padrões com [Expressões Regulares](https://pt.wikipedia.org/wiki/Express%C3%A3o_regular)
+
+Identificando uma palavra que Contenha p
+
+```{r}
+str_view(string = paises_tri,
+         pattern = ".P")
+```
+
+Identificando a palavra que contenha o termo flu
+
+```{r}
+str_view(string = realidade,
+         pattern = "Flu")
+
+```
+
+Identificando dentro da string Apelidos aqueles que remetem ao fla
+
+```{r}
+apelidos <- c("flamengo", 
+            "fla", 
+            "mengao",
+            "mengo",
+            "mengao do meu coracao",
+            "vasco",
+            "vascao",
+            "menor do rio",
+            "faisca",
+            "foguinho",
+            "flores",
+            "fluminenCCCCCCe")
+```
+
+```{r}
+
+str_view(string = apelidos,
+         pattern = "fla")
+
+```
+
+Não conseguimos capturar todos os termos. Vamos tentar outra string
+
+```{r}
+str_view(string = apelidos,
+         pattern = "mengo")
+```
+
+Ainda não conseguimos, alguns termos ficaram de fora.
+
+Vamos usar o ., que aqui serve para indicar um string qualquer
+
+```{r}
+str_view(string = apelidos,
+         pattern = "meng.")
+```
+
+Ainda assim não está perfeito. Como faço para indicar ou fla ou mengo? Usando o operador ou \|
+
+```{r}
+str_view(string = apelidos,
+         pattern = "fla|meng.")
+```
+
+# Aprendendo a lidar com ancoras
+
+Usamos 2 ancoras. \^ para o inicio da string.\$ para o fim ad string
+
+Vocês sabem o que esses números representam?
+
+```{r}
+numeros <- c(82999398898,
+82988861501,
+61982164958,
+73991571916,
+21997407479,
+21997124135,
+98982400640,
+61981678570,
+11956856812,
+81998668571,
+11964226930,
+41988745899,
+44997007297,
+21999868831)
+
+numeros
+```
+
+Exemplo identificando os ddds
+
+```{r}
+str_view(string = numeros,
+         pattern = "^..")
+```
+
+Especificando que queremos apenas os 2 primeiros elementos númericos
+
+```{r}
+str_view(string = numeros,
+         pattern = "^[0-9]{2}")
+```
+
+Exemplo identificando os 3 últimos digitos
+
+```{r}
+str_view(string = numeros,
+         pattern = "...$")
+
+```
+
+Especificando que queremos os 3 últimos elementos númericos
+
+```{r}
+str_view(string = numeros,
+         pattern = "[0-9]{3}$")
+```
+
+# especificando que quero 3 últimos digitos
+
+```{r}
+str_view(string = numeros,
+         pattern = "\\d{3}$")
+```
+
+## dicas
+
+\\d encontra qualquer digito \\s encontra qualquer tipo de espaço [abc] encontra a, b e c [\^abc] encontra qualquer coisa menos a b e c
+
+```{r}
+x <- "1888 é o ano mais longo em algarismo romanos: MDCCCLXXXVIII"
+```
+
+? retorna a 0 a 1 termos
+
+```{r}
+str_view(x, "CC?")
+```
+
+-   retorna a mais de 1 termo
+
+```{r}
+str_view(x, "CC+")
+```
+
+-   retorna a 0 ou mais termos
+
+```{r}
+str_view(x, "CC*")
+```
+
+{n} retorna a n numeros {n,} retorna a n numeros ou mais {,m} retorna a no maximo m, {n,m} retorna entre n a m
+
+```{r}
+str_view(x, 'C{2,3}?')
+```
+
+##Detectando padrões
+
+Se eu quero fazer um teste lógico de que um palavra está contida em outra uso o str_detect().
+
+Vamos ver se o termo fla ou meng. aparece dentro dos apelidos
+
+```{r}
+apelidos
+```
+
+```{r}
+str_detect(string = apelidos,
+          pattern = "fla|meng.")
+
+```
+
+E se eu perguntar, quantas strings de apelidos remetem a termos do flamengo? Responda em R
+
+```{r}
+str_detect(string = apelidos,
+          pattern = "fla|meng.") %>% 
+  sum()
+
+```
+
+Se eu quiser em média quantos dos apelidos que identificamos para os clubes do RJ remetem ao flamengo?
+
+```{r}
+str_detect(string = apelidos,
+           pattern = "fla|meng.") %>% 
+  mean()
+```
+
+Enquanto o str_detect promove um texte lógico de true or false str_match retorna em um formato matricial onde os termos forma encontrados.
+
+```{r}
+str_match(string = apelidos,
+           pattern = "fla|meng.")
+
+```
+
+Usando em conjunto com o mutate
+
+```{r}
+apelidos %>% 
+  dplyr::tibble(apelidos= .) %>% 
+  dplyr::mutate(retorna_ao_fla = str_match(string = apelidos,
+                                    pattern = "fla|meng."))
+```
+
+Já o str_extract mostra onde os termos foram encontrados para trabalhar em datasets a função str_extract é mais indicada.
+
+```{r}
+str_extract(string = apelidos,
+          pattern = "fla|meng.")
+```
+
+```{r}
+apelidos %>% 
+  dplyr::tibble(apelidos= .) %>% 
+  dplyr::mutate(retorna_ao_fla = str_extract(string = apelidos,
+                                    pattern = "fla|meng."))
+```
+
+str_replace substituir um termo por outro
+
+Por exemplo ou flamengo ou nada.
+
+```{r}
+str_replace(string = apelidos,
+            pattern = "[^(flamengo|fla|meng.)]",
+            replacement =  NA_character_)
+```
+
+Por fim, utilizamos o str_split() para quebrar um vetor em multiplos textos
+
+```{r}
+hino_mengao<-"Uma vez Flamengo
+Sempre Flamengo
+Flamengo sempre eu hei de ser
+
+É meu maior prazer vê-lo brilhar
+Seja na terra, seja no mar
+Vencer, vencer, vencer
+
+Uma vez Flamengo
+Flamengo até morrer
+
+Na regata, ele me mata
+Me maltrata, me arrebata
+Que emoção no coração
+Consagrado no gramado
+Sempre amado, o mais cotado
+No Fla-Flu é o: Ai, Jesus!
+
+Eu teria um desgosto profundo
+Se faltasse o Flamengo no mundo
+
+Uma vez Flamengo
+Sempre Flamengo
+Flamengo sempre eu hei de ser
+
+É meu maior prazer vê-lo brilhar
+Seja na terra, seja no mar
+Vencer, vencer, vencer
+
+Uma vez Flamengo
+Flamengo até morrer
+
+Na regata, ele me mata
+Me maltrata, me arrebata
+Que emoção no coração
+Consagrado no gramado
+Sempre amado, o mais cotado
+No Fla-Flu é o: Ai, Jesus!
+
+Eu teria um desgosto profundo
+Se faltasse o Flamengo no mundo
+Ele vibra, ele é fibra
+Muita libra já pesou
+Flamengo até morrer eu sou"
+```
+
+Transformando o hino do flamengo em um dataset
+
+```{r}
+#Transformando cada linha em um vetor
+str_split(hino_mengao, 
+          pattern = "\n") %>% 
+  #desenlistando os dados
+  unlist() %>% 
+  #transformando o vetor em um dataset com a 1 coluna chamada verso
+  dplyr::tibble(verso = .) %>%  
+  #removendo as linhas vazias
+  dplyr::filter(verso != "") %>% 
+  #adicionando o número de linhas
+  dplyr::mutate(linha = 1:35)
+```
+
+## Exercicios
+
+Suponha que você tem uma tabela com informações sobre alunos de uma escola e uma das colunas contém o nome completo dos alunos. Você deseja criar uma nova coluna indicando o número de caracteres do nome de cada aluno.
+
+```{r}
+library(tidyverse)
+alunos <- tibble(
+  nome_completo = c("João Silva", "Maria Souza", "Pedro Santos", "Luíza Oliveira")
+)
+```
+
+Suponha que você tem uma tabela com informações sobre filmes, e uma das colunas contém a sinopse de cada filme. Você deseja identificar se existem filmes com sinopses muito curtas ou muito longas, e criar uma nova coluna indicando se a sinopse é "curta", "média" ou "longa" com base no número de caracteres.
+
+```{r}
+filmes <- tibble(
+  titulo = c("Matrix", "De Volta para o Futuro", "Cidade de Deus", "O Senhor dos Anéis"),
+  sinopse = c("O jovem programador Thomas Anderson é atormentado por estranhos pesadelos em que está sempre conectado por cabos a um imenso sistema de computadores do futuro. À medida que o sonho se repete, ele começa a desconfiar da realidade. Thomas conhece os misteriosos Morpheus e Trinity e descobre que é vítima de um sistema inteligente e artificial chamado Matrix, que manipula a mente das pessoas e cria a ilusão de um mundo real enquanto usa os cérebros e corpos dos indivíduos para produzir energia.",
+              "O adolescente Marty McFly é transportado para 1955 quando uma experiência do excêntrico cientista Doc Brown dá errado. Ele viaja pelo tempo em um carro modificado e acaba conhecendo seus pais ainda jovens. O problema é que Marty pode deixar de existir porque ele interferiu na rotina dos pais, que correm o risco de não se apaixonar mais. Para complicar ainda mais a situação, Marty precisa voltar para casa a tempo de salvar o cientista", 
+              "Buscapé é um jovem pobre, negro e sensível, que cresce em um universo de muita violência. Ele vive na Cidade de Deus, favela carioca conhecida por ser um dos locais mais violentos do Rio. Amedrontado com a possibilidade de se tornar um bandido, Buscapé é salvo de seu destino por causa de seu talento como fotógrafo, o qual permite que siga carreira na profissão. É por meio de seu olhar atrás da câmera que ele analisa o dia a dia da favela em que vive, onde a violência aparenta ser infinita.",
+              "Em uma terra fantástica e única, um hobbit recebe de presente de seu tio um anel mágico e maligno que precisa ser destruído antes que caia nas mãos do mal. Para isso, o hobbit Frodo tem um caminho árduo pela frente, onde encontra perigo, medo e seres bizarros. Ao seu lado para o cumprimento desta jornada, ele aos poucos pode contar com outros hobbits, um elfo, um anão, dois humanos e um mago, totalizando nove seres que formam a Sociedade do Anel.") 
+)
+```
+
+Suponha que você tem uma tabela com informações sobre clientes de uma loja e duas colunas contém o nome e sobrenome dos clientes, respectivamente. Você deseja criar uma nova coluna contendo o nome completo dos clientes, juntando o nome e sobrenome. Para isso, você pode utilizar a função **`str_c`** do pacote **`stringr`**.
+
+```{r}
+clientes <- tibble(
+  nome = c("João", "Maria", "Pedro", "Luíza"),
+  sobrenome = c("Silva", "Souza", "Santos", "Oliveira")
+)
+
+clientes
+```
+
+Suponha que você tem uma tabela com informações sobre produtos de uma loja e duas colunas contém a marca e modelo dos produtos, respectivamente. Alguns produtos possuem informações adicionais na forma de uma lista em uma terceira coluna. Você deseja criar uma nova coluna contendo a descrição completa dos produtos, juntando a marca, modelo e informações adicionais, quando disponíveis. Para isso, você pode utilizar a função **`str_c`** do pacote **`stringr`** em conjunto com as funções **`pivot_longer`** e **`unnest`** do pacote **`tidyr`**.
+
+```{r}
+produtos <- tibble(
+  marca = c("Samsung", "Apple", "LG", "Motorola"),
+  modelo = c("Galaxy S21", "iPhone 13", "G8 ThinQ", "Moto G9"),
+  info_adicional = list(c("Tela de 6.2 polegadas", "Câmera de 64MP"), NULL, "Resolução de 4K", c("Bateria de 5000mAh", "Memória interna de 128GB"))
+)
+produtos
+```
+
+Suponha que você tenha um vetor de strings com datas no formato "dd/mm/yyyy" e deseja extrair apenas o ano de cada uma. Você pode usar a função **`str_sub()`** para fazer isso. Veja o exemplo abaixo:
+
+```{r}
+datas <- c("01/01/2020", "15/07/2021", "31/12/2022")
+```
+
+Suponha que você tenha um vetor de strings com nomes de pessoas no formato "sobrenome, nome" e deseja extrair apenas o sobrenome de cada uma. Você pode usar a função **`str_sub()`** para fazer isso. Veja o exemplo abaixo:
+
+ 
+
+```{r}
+nomes <- c("Silva, João", "Pereira, Maria", "Souza, Ana")
+```
+
+Suponha que você tenha um vetor de strings com números de telefone no formato "(xx) xxxx-xxxx" e deseja extrair apenas os últimos quatro dígitos de cada um. Você pode usar a função **`str_sub()`** para fazer isso. Veja o exemplo abaixo:
+
+```{r}
+telefones <- c("(11) 1234-5678", "(22) 9876-5432", "(33) 4567-8910")
+```
+
+Suponha que você trabalha em uma empresa que está fazendo um levantamento de informações sobre seus funcionários. Eles solicitaram que você conte o número de caracteres nos nomes dos funcionários para fins de análise. Você pode usar a função **`str_count`** para fazer essa contagem.
+
+```{r}
+funcionarios <- tibble(
+  nome = c("João", "Maria", "Pedro", "Lucas", "Mariana"),
+  sobrenome = c("Silva", "Santos", "Oliveira", "Fernandes", "Gomes")
+)
+
+funcionarios
+```
+
+Suponha que você esteja trabalhando em um projeto de análise de dados de redes sociais e precise contar quantas vezes a palavra música aparece em uma série de frases. Você pode usar a função **`str_count`** para fazer essa contagem.
+
+```{r}
+frases <- tibble(
+  frase = c("Eu gosto muito de música.", "Música é vida.", "Vida sem música não tem graça.")
+)
+
+```
+
+Suponha que você tenha um conjunto de dados que contém informações de pacientes e queira identificar quais registros contêm um número de telefone inválido (por exemplo, um número que não tem 10 dígitos). Você pode usar a função **`str_detect`** para isso. Veja o exemplo abaixo:
+
+```{r}
+pacientes <- tibble(
+  nome = c("João", "Maria", "José", "Ana"),
+  telefone = c("1234567890", "99999999", "987654321", "12345678900")
+)
+```
+
+Suponha que você possui uma lista de e-mails e precisa identificar quais deles contêm a palavra "promoção". Você pode utilizar a função **`str_detect`** para criar uma coluna que indique se o e-mail possui ou não a palavra "promoção".
+
+```{r}
+emails <- c("loja1@exemplo.com", "loja2@exemplo.com", "loja3@exemplo.com",
+            "promocao@exemplo.com", "ofertas@exemplo.com", "loja4@exemplo.com")
+
+# Criando tibble
+tb_emails <- tibble(email = emails)
+tb_emails
+
+```
+
+Suponha que você trabalhe em um hospital e tenha um conjunto de dados com informações dos pacientes, incluindo a data de admissão em uma coluna chamada "data_admissao". Você precisa extrair informações da data de admissão para realizar análises mais detalhadas, como o dia da semana em que o paciente foi admitido.
+
+```{r}
+dados <- tibble(
+  id_paciente = 1:10,
+  data_admissao = c("2022-01-02 12:34:56", "2021-12-31 23:45:01",
+                    "2022-01-05 08:00:00", "2022-01-01 19:30:15",
+                    "2022-01-03 15:20:00", "2022-01-06 11:11:11",
+                    "2022-01-01 10:00:00", "2022-01-04 16:30:00",
+                    "2022-01-07 14:00:00", "2022-01-01 22:15:00")
+)
+
+```
+
+Suponha que você trabalhe em uma agência de publicidade e tenha um conjunto de dados com informações sobre campanhas publicitárias, incluindo o texto do anúncio em uma coluna chamada "texto_anuncio". Você precisa contar o número de palavras em cada anúncio para avaliar a eficácia da mensagem.
+
+```{r}
+dados <- tibble(
+  id_campanha = 1:3,
+  texto_anuncio = c("Compre agora a nova coleção de verão com desconto!",
+                    "Não perca a chance de economizar na sua próxima compra",
+                    "Os melhores produtos para você e sua família"))
+
+```
+
+```{r}
+  # Gerando os dados
+library(tibble)
+
+dados <- tibble(
+  influenciador = rep(c("JanjaLula", "FelipeNeto", "Lilvincin", "Hangfc" ), each = 6),
+ texto = c(
+  "Começando a semana com muita energia #motivação #workout #fitness", 
+  "Quando o sol bate no rosto a gente aproveita pra tirar foto #sunnyday #verão",
+  "Fiz essa receita deliciosa de bolo de cenoura hoje #cozinha #sobremesa #food
+    ",
+  "#tbt da última viagem que fizemos #travel #vacation #nature",
+  "Look do dia com essa camisa que eu amo #fashion #style #ootd",
+  "Quando a gente encontra amigos de longa data é só felicidade #amizade #friends",
+  "Aproveitando o final de semana pra curtir a família #familytime #happy #love",
+  "Hoje é dia de jogo e eu tô ansiosa demais #futebol #soccer #sports",
+  "Postando essa foto linda da minha cachorrinha #pets #doglover #cutenessoverload",
+  "Quando a gente se sente bem com a nossa própria companhia #selfie #me #happy",
+  "Já que é pra começar o dia com energia, vamos de café da manhã reforçado #breakfast #foodie #yum",
+  "Essa vista é a melhor coisa que eu poderia desejar agora #nature #mountain #peaceful",
+  "Look que usei hoje no trabalho #office #businesswoman #style",
+  "Um dos meus hobbies preferidos é fotografia #photography #hobby #art",
+  "Muito feliz com o resultado do projeto que finalizei essa semana #work #projeto #conquista",
+  "Fiquei apaixonada por essa paisagem que encontrei por aí #landscape #beauty #view",
+  "Esse é o meu lugar preferido pra descansar e recarregar as energias #relax #peace #zen",
+  "Começando a tarde com esse smoothie delicioso #food #healthy #vegan",
+  "Essa é uma das minhas roupas preferidas, uso sempre #fashion #clothing #style",
+  "Quando a gente encontra um lugar que é a nossa cara #decoração #homedecor #interiores",
+  "Amo experimentar novos sabores, principalmente de sobremesa #foodie #dessert #yum",
+  "Passando aqui pra desejar um bom final de semana a todos #weekend #happy #enjoy",
+  "Essa é a minha música preferida de todos os tempos #music #song #favorite",
+  "Amo demais a minha família, são tudo pra mim #family #love #happy"
+)
+)
+
+dados
+
+```
+
+Suponha que você possui uma lista de e-mails e precisa identificar quais deles contêm a palavra "promoção". Você pode utilizar a função **`str_detect`** para criar uma coluna que indique se o e-mail possui ou não a palavra "promoção".
+
+```{r}
+# Gerando dados
+emails <- c("loja1@exemplo.com", "loja2@exemplo.com", "loja3@exemplo.com",
+            "promocao@exemplo.com", "ofertas@exemplo.com", "loja4@exemplo.com")
+
+# Criando tibble
+tb_emails <- tibble(email = emails)
+
+```
