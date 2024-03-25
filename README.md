@@ -26,7 +26,7 @@ O Curso está dividido em 8 aulas:
 - Purrr e Programação Funcional
 - Functioning, quando se começa a agir como programador.
 
-**Título: Introdução ao R para Análise de Dados**
+### Introdução ao R para Análise de Dados\*\*
 
 **I. Fundamentos do R como Calculadora** - Executando operações
 matemáticas básicas - Soma, subtração, multiplicação, divisão -
@@ -114,58 +114,59 @@ abordados durante o curso - Sugestões para a continuidade dos estudos e
 exploração de recursos adicionais - Agradecimentos e feedback dos
 participantes
 
-Título: Manipulando Dados em R - Da Teoria à Prática
+### Manipulando Dados em R - Da Teoria à Prática
 
-I. Introdução
+**Título: Manipulando Dados em R - Da Teoria à Prática**
 
-Breve explicação sobre os conceitos de datasets Wide e Long Carregamento
-do pacote tidyverse II. Transformando Dados para o Formato Tidy
+**I. Introdução** - Breve explicação sobre os conceitos de datasets Wide
+e Long - Carregamento do pacote tidyverse
 
-Apresentação de exemplos de datasets em formato Wide e Long Explicação
-sobre a importância do formato tidy para análise de dados Demonstração
-da função pivot_longer para transformar dados de Wide para Long III.
-Continuação da Transformação para o Formato Tidy
+**II. Transformando Dados para o Formato Tidy** - Apresentação de
+exemplos de datasets em formato Wide e Long - Explicação sobre a
+importância do formato tidy para análise de dados - Demonstração da
+função `pivot_longer` para transformar dados de Wide para Long
 
-Uso da função pivot_longer em outro exemplo de dataset Apresentação da
-função pivot_wider para transformar dados de Long para Wide IV. Revisão
-e Exercícios
+**III. Continuação da Transformação para o Formato Tidy** - Uso da
+função `pivot_longer` em outro exemplo de dataset - Apresentação da
+função `pivot_wider` para transformar dados de Long para Wide
 
-Importação de um dataset externo (dados_b3_2010_2022.csv) Remoção de
-coluna desnecessária e transformação do dataset para formato tidy
-Resolução de exercício envolvendo transformação de um dataset em formato
-Long V. Separando e Juntando Dados
+**IV. Revisão e Exercícios** - Importação de um dataset externo
+(dados_b3_2010_2022.csv) - Remoção de coluna desnecessária e
+transformação do dataset para formato tidy - Resolução de exercício
+envolvendo transformação de um dataset em formato Long
 
-Demonstração da função separate para separar valores em uma coluna Uso
-da função unite para juntar valores de colunas diferentes Apresentação
-de exemplos práticos com os datasets table3 e table5 VI. Revisão e
-Exercícios
+**V. Separando e Juntando Dados** - Demonstração da função `separate`
+para separar valores em uma coluna - Uso da função `unite` para juntar
+valores de colunas diferentes - Apresentação de exemplos práticos com os
+datasets table3 e table5
 
-Importação do dataset pedidos Remoção da primeira linha e transformação
-do dataset em formato tidy Exercício prático de separação e junção de
-dados VII. Lidando com Dados Ausentes
+**VI. Revisão e Exercícios** - Importação do dataset pedidos - Remoção
+da primeira linha e transformação do dataset em formato tidy - Exercício
+prático de separação e junção de dados
 
-Explicação das funções drop_na, fill e replace_na para lidar com dados
-ausentes Demonstração prática dessas funções com o dataset pedidos_final
-VIII. Transformando Vetores de Texto em Datasets
+**VII. Lidando com Dados Ausentes** - Explicação das funções `drop_na`,
+`fill` e `replace_na` para lidar com dados ausentes - Demonstração
+prática dessas funções com o dataset pedidos_final
 
-Utilização da função enframe para transformar uma lista em dataset
-Explicação sobre a transformação de formato de dataset e utilização das
-funções unnest_wider e unnest_longer IX. Aplicando Funções para
-Múltiplas Colunas
+**VIII. Transformando Vetores de Texto em Datasets** - Utilização da
+função `enframe` para transformar uma lista em dataset - Explicação
+sobre a transformação de formato de dataset e utilização das funções
+`unnest_wider` e `unnest_longer`
 
-Uso das funções mutate_all e summarise_all para operações em todas as
-colunas Demonstração da função across para aplicar funções em múltiplas
-colunas de forma seletiva X. Eninhando Dados
+**IX. Aplicando Funções para Múltiplas Colunas** - Uso das funções
+`mutate_all` e `summarise_all` para operações em todas as colunas -
+Demonstração da função `across` para aplicar funções em múltiplas
+colunas de forma seletiva
 
-Apresentação da função nest para juntar elementos dentro de uma coluna
-Exemplos práticos de aplicação da função nest seguida de análises
-adicionais XI. Conclusão e Próximos Passos
+**X. Eninhando Dados** - Apresentação da função `nest` para juntar
+elementos dentro de uma coluna - Exemplos práticos de aplicação da
+função `nest` seguida de análises adicionais
 
-Recapitulação dos principais conceitos e técnicas aprendidas Sugestões
-para explorar ainda mais as funcionalidades do tidyverse e realizar
-análises avançadas
+**XI. Conclusão e Próximos Passos** - Recapitulação dos principais
+conceitos e técnicas aprendidas - Sugestões para explorar ainda mais as
+funcionalidades do tidyverse e realizar análises avançadas
 
-**Título: Explorando e Manipulando Textos em R**
+### Explorando e Manipulando Textos em R\*\*
 
 **I. Introdução** - Breve explicação sobre a importância da manipulação
 de textos em análise de dados - Demonstração das funcionalidades básicas
@@ -212,7 +213,7 @@ contextos
 conceitos e técnicas aprendidas - Sugestões para aprofundamento e
 exploração adicional das funcionalidades do pacote stringr
 
-**Título: Introdução à Visualização de Dados em R**
+### Introdução à Visualização de Dados em R\*\*
 
 **I. Introdução** - Breve introdução sobre a importância da visualização
 de dados - Apresentação dos pacotes necessários para visualização de
@@ -266,7 +267,7 @@ exploração adicional e aprofundamento nos conceitos apresentados -
 Encorajamento para a prática e experimentação com diferentes tipos de
 gráficos e técnicas de visualização de dados
 
-**Título: Explorando Visualizações Avançadas com ggplot2**
+### Explorando Visualizações Avançadas com ggplot2\*\*
 
 **I. Revisão do ggplot** - Breve revisão sobre a construção de gráficos
 utilizando ggplot2 - Exemplificação dos cinco tipos de gráficos:
